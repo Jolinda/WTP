@@ -7,9 +7,11 @@
 % Description: This script runs the practice task. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+function runWTP_practice()
+
+
 %% Initial setup for PsychToolbox, using InitPTB.m
 clear all;
-
 pathtofile = mfilename('fullpath');
 homepath = pathtofile(1:(regexp(pathtofile,'PTBScripts') - 1));
 addpath(fullfile(homepath,'PTBScripts'));
@@ -33,8 +35,9 @@ FoodBmp = PracFoodBmp;
 %% Load bid key bitmap into memory
 BidKeyPic = imread(fullfile(homepath, 'BidKeys.bmp'),'BMP');
 
-%% Initialize keys 
-inputDevice = PTBParams.keys.deviceNum;
+%% Initialize keys  
+%inputDevice = PTBParams.keys.deviceNum;
+inputDevice = PTBParams.keys.right_index;
 
 %% Run instructions
 FoodBmp = PracFoodBmp;
@@ -45,13 +48,15 @@ if PTBParams.inMRI == 1
 else 
     DrawFormattedText(PTBParams.win,'The task is about to begin.\n\n Get ready!','center','center',PTBParams.white);
 end
+
 Screen(PTBParams.win,'Flip');
 
 %% Run task and log data
 % Wait for the trigger before continuing
 % Wait for a 'spacebar' to start the behavioral version, and an ' for the scanner version
 scantrig; 
-StartTime = GetSecs(); %May need to be commented out to run in the mock with scantrig
+StartTime = GetSecs(); 
+% May need to be commented out to run in the mock with scantrig
 
 for insrx = 1
     showInstruction(1,PTBParams,'SlideType','BMP');
@@ -63,6 +68,8 @@ bidTest
 showInstruction(6,PTBParams,'SlideType','BMP')
 Food = [2 3 1];
 
+
+
 % Run task
 for trial = 1:3 %num trials
     bidFood_practice;
@@ -70,7 +77,8 @@ for trial = 1:3 %num trials
         if PTBParams.inMRI == 1 %In the scanner use 5678, if outside use 1234
             [Resp, RT] = collectResponse(BidWait,0,'5678');
         else
-            [Resp, RT] = collectResponse(BidWait,0,'1234'); %Changing the first argument changes the time the bid is on the screen
+            [Resp, RT] = collectResponse(BidWait,0,'1234', PTBParams.keys.right_index ); 
+            %Changing the first argument changes the time the bid is on the screen
         end
     DrawFormattedText(PTBParams.win,'+','center','center',PTBParams.white);
     BidOff = Screen(PTBParams.win,'Flip');
@@ -81,9 +89,12 @@ DrawFormattedText(PTBParams.win,'The task is now complete.','center','center',PT
 Screen(PTBParams.win,'Flip');
 WaitSecs(4);
 
+
 %% Close screen
 if ~exist('sprout')
     %% Housekeeping after the party
     Screen('CloseAll');
     ListenChar(0);
+end
+
 end

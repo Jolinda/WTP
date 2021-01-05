@@ -1,4 +1,4 @@
-function [PTBParams, runNum, study] = InitPTB(homepath)
+function [PTBParams, runNum, study] = InitPTB_practice(homepath)
 % function [subjid ssnid datafile PTBParams] = InitPTB(homepath)
 % 
 % Function for initializing parameters at the beginning of a session
@@ -21,17 +21,21 @@ if isempty(inMRI)
     inMRI = 0;
 end
 
+PTBParams.keys = ButtonLoad();
+
 %% Initialize PsychToolbox parameters and save in PTBParams struct
 AssertOpenGL;
-ListenChar(2); % don't print keypresses to screen
+
+ListenChar(2); % dont print keypresses to screen
+
 Screen('Preference', 'SkipSyncTests', 1); % use if VBL fails; use this setting on the laptop
 %Screen('Preference', 'VisualDebugLevel',3);
 
 HideCursor; %comment out for testing only
 
 % Set screen number
-%screenNum=max(Screen('Screens'));
-screenNum=0;
+screenNum=max(Screen('Screens'));
+%screenNum=0;
 
 % Set screen size and parameters
 [w, rect] = Screen('OpenWindow',screenNum);
@@ -52,7 +56,7 @@ PTBParams.black = black;
 PTBParams.gray = gray;
 PTBParams.ifi = ifi;
 PTBParams.homepath = homepath;
-PTBParams.keys = initKeys(inMRI);
+%PTBParams.keys = initKeys(inMRI);
 PTBParams.inMRI = inMRI;
 
 % Flip screen
@@ -67,13 +71,6 @@ Screen('FillRect',w,black);
 WaitSecs(.5);
     
 %% Seed random number generator 
-% Note that different versions of Matlab allow/deprecate different random 
-% number generators, so I've incorporated some flexibility here
+rng(GetSecs, 'twister');
 
-[v, d] = version; % get Matlab version
-if datenum(d) > datenum('April 8, 2011') % compare to first release of rng
-    rng(GetSecs, 'twister')
-else
-    rand('twister',sum(100*clock));
 end
-

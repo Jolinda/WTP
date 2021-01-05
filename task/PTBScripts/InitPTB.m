@@ -86,8 +86,9 @@ else
 end
 
 %% Initialize keys 
-[response_keyboard, ~] = setUpDevices(inMRI);
-PTBParams.keys = initKeysFromId(response_keyboard, trigger);
+PTBParams.keys = ButtonLoad();
+%[response_keyboard, ~] = setUpDevices(inMRI);
+%PTBParams.keys = initKeysFromId(response_keyboard, trigger);
 
 %% Initialize PsychToolbox parameters and save in PTBParams struct
 AssertOpenGL;
@@ -98,8 +99,8 @@ Screen('Preference', 'SkipSyncTests', 1); % use if VBL fails; use this setting o
 HideCursor; %comment out for testing only
 
 % Set screen number
-%screenNum=max(Screen('Screens'));
-screenNum=0;
+screenNum=max(Screen('Screens'));
+%screenNum=0;
 
 % Set screen size and parameters
 [w, rect] = Screen('OpenWindow',screenNum);
@@ -144,17 +145,11 @@ Screen('FillRect',w,black);
 WaitSecs(.5);
     
 %% Seed random number generator 
-% Note that different versions of Matlab allow/deprecate different random 
-% number generators, so I've incorporated some flexibility here
+rng(GetSecs, 'twister')
 
-[v, d] = version; % get Matlab version
-if datenum(d) > datenum('April 8, 2011') % compare to first release of rng
-    rng(GetSecs, 'twister')
-else
-    rand('twister',sum(100*clock));
-end
 end
 
+% no longer used
 function [response_keyboard, internal_keyboard] = setUpDevices(MRI)
 numDevices=PsychHID('NumDevices');
 devices=PsychHID('Devices');

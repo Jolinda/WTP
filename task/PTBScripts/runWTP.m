@@ -10,6 +10,8 @@
 % You do not need to run the initial setup (InitPTB.m).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+function runWTP()
+
 %% Initial setup for PsychToolbox, using InitPTB.m
 clear all;
 
@@ -71,7 +73,26 @@ end
 %% Preload Stimulus Pictures 
 % Load food bitmaps into memory
 for x = 1:length(bmps)
-    FoodBmp{x} = imread(fullfile(sprintf('%sfoodpics/run%d/%s', homepath, PTBParams.(char(runNum)).runid, bmps{x})),'bmp');
+% jolinda didn't like this
+%    FoodBmp{x} = imread(fullfile(sprintf('%sfoodpics/run%d/%s', homepath, PTBParams.(char(runNum)).runid, bmps{x})),'bmp');
+
+% easier to read version
+    runfolder = sprintf('run%d', PTBParams.(char(runNum)).runid);
+    filename = fullfile(homepath, 'foodpics', runfolder, bmps{x});
+
+% jcs added this part for easier testing
+% if you can't find it try the healthy/unhealthy folders
+% assumes the file is not in both
+    if ~isfile(filename) 
+        search = dir(fullfile(homepath, 'foodpics','*healthy', bmps{x}));
+        if isempty(search)
+            Screen('CloseAll');
+            error("I can't find " + bmps{x});
+        end
+        filename = fullfile(search.folder, search.name);
+    end
+
+    FoodBmp{x} = imread(filename, 'bmp');
 end
 
 % Specify food order (sequential because order is defined in previous chunk)
@@ -97,7 +118,7 @@ if length(Jitter) < length(TrialOrder)
 end
 
 %% Initialize keys
-inputDevice = PTBParams.keys.deviceNum;
+inputDevice = PTBParams.keys.right_index;
 
 %% Load task instructions based on MRI or behavioral session
 if PTBParams.inMRI == 1
@@ -158,4 +179,6 @@ if ~exist(subDir)
 else
     copyfile(sprintf('SubjectData/%s/',subCode), subDir);
     disp(sprintf('Output file copied to %s',subDir));
+end
+
 end

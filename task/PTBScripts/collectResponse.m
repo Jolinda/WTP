@@ -78,6 +78,7 @@ else
     end
 end
 
+
 if moveOn ~= 1
     while (GetSecs() - StartWaiting) < ListenTime
     end

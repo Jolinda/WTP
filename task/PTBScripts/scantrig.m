@@ -6,9 +6,10 @@
 %
 % Wait for ' from scanner to begin the experiment.
 
-KbTriggerWait(PTBParams.keys.trigger,inputDevice); % note: no problems leaving out 'inputDevice' in the mock, but MUST INCLUDE FOR SCANNER
+%KbTriggerWait(PTBParams.keys.trigger,inputDevice); 
+% note: no problems leaving out 'inputDevice' in the mock, but MUST INCLUDE FOR SCANNER
+KbTriggerWait(PTBParams.keys.trigger,PTBParams.keys.trigger_index);
 disabledTrigger = DisableKeysForKbCheck(PTBParams.keys.trigger);
 StartTime = GetSecs;
-    
 DrawFormattedText(PTBParams.win,'+','center','center',PTBParams.white);
 Screen(PTBParams.win,'Flip');

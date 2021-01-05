@@ -66,4 +66,4 @@ Screen('DrawTexture',PTBParams.win,textureIndex, [],destRect); %[],destRect
 Screen(PTBParams.win,'Flip');
 Screen('Close',textureIndex);
 
-[Resp, RT] = collectResponse([],[],required_keys);
+[Resp, RT] = collectResponse([],[],required_keys, PTBParams.keys.right_index);
